@@ -1,29 +1,30 @@
-# 🔧 اسم الأداة
+# 🔧 WOLFCRACK
 
-وصف مختصر وجذاب يشرح ماذا تفعل الأداة ولماذا هي مفيدة. (سطر أو سطرين)
-
----
-
-## ✨ الميزات
-
-- ✅ ميزة 1
-- ✅ ميزة 2
-- ✅ تدعم كذا وكذا...
-- ✅ سهلة الاستخدام وسريعة الأداء
+WOLFCRACK tool is a tool for testing the penetration of wireless networks with WPA/WPA2 encryption and WEP encryption so that through this tool you can know the password for the network and also you can disconnect from connected devices
 
 ---
 
-## 🖥️ المتطلبات
+## ✨ Features
 
-- Python 3.x / Bash / إلخ
-- نظام التشغيل: Linux / Windows / إلخ
-- مكتبات إضافية (إذا فيه)
+- ✅ WPA/WPA2 Network attack
+- ✅ WEP Network attack
+- ✅ Network Deauth attack
+- ✅ Open Source
 
 ---
 
-## ⚙️ التثبيت
+## 🛠 Requirements
+
+- Python 3.x / Bash / Xterm / Aircrack
+- Works on: Kali Linux / Ubuntu / Parrot OS / Black arch / Arch linux / linux ....
+
+---
+
+## ⚙️ Installation
 
 ```bash
-git clone https://github.com/username/اسم_المشروع.git
-cd اسم_المشروع
-bash install.sh   # أو python3 script.py حسب طريقتك
+git clone https://github.com/rrsvkk/wolfcrack.git
+cd wolfcrack
+chmod +x *
+sudo bash setup.sh
+sudo python3 wolfcrack.py
