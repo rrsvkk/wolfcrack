@@ -12,13 +12,14 @@ WOLFCRACK tool is a tool for testing the penetration of wireless networks with W
 - ✅ WPA/WPA2 Network attack
 - ✅ WEP Network attack
 - ✅ Network Deauth attack
+- ✅ MITM attack
 - ✅ Open Source
 
 ---
 
 ## 🛠 Requirements
 
-- Python 3.x / Bash / Xterm / Aircrack
+- Python 3.x / Bash / Xterm / Aircrack / Bettercap
 - Works on: Kali Linux / Ubuntu / Parrot OS / Black arch / Arch linux / linux ....
 
 ---
