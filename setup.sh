@@ -10,6 +10,7 @@ sudo apt install -y aircrack-ng
 echo ""
 sudo apt-get install -y xterm
 echo ""
+sudo apt install -y bettercap
 mkdir capturefile
 
 echo "✅ Its Done ... Now start with use the tool ..."
