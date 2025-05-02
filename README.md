@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/916fdcb5-45b1-4c69-8da4-17e5ff77beea)
+![image](wolfcrack.png)
 
 
 # 🔧 WOLFCRACK
